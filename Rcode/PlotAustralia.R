@@ -10,6 +10,25 @@ require(raster)
 
 # read in the data from the hrs stations
 stations <- read_csv("data/hrs_station_details.csv", skip = 11)
+head(stations)
+
+stations_p <- stations %>%
+  dplyr::select(`Station Name`,Latitude,Longitude)
+
+# read in the final data (from the analysis)
+used_st <- read_csv("data/Data_allResults.csv")
+used_st_p <- used_st %>%
+  dplyr::select(Station_name, LAT, LON)
+
+colnames(stations_p) <- colnames(used_st_p)
+station_p <- stations_p %>%
+  mutate(type = "All")
+
+used_st_p <- used_st_p %>%
+  mutate(type = "Used")
+
+plot_st <- rbind(station_p,used_st_p)
+
 # read in the Ozdata from this page:http://www.elaliberte.info/code
 ozdata <- read_csv("data/ozdata.csv")
 # split by state, otherwise plots funny
@@ -43,8 +62,14 @@ p <- p + geom_polygon(data=ozdata_WA, aes(long, lat),
                       fill="white",colour="black")
 p <- p + geom_polygon(data=ozdata_TAS, aes(long, lat),
                       fill="white",colour="black")
-p <- p + geom_point(data =stations, aes(Longitude,Latitude), 
-                    colour="blue", size=2)
+p <- p + geom_point(data =plot_st, aes(LON,LAT, shape=type, colour=type),
+                    alpha=0.5, size=2)
+# p <- p + geom_point(data =used_st, aes(LON,LAT), 
+#                     colour="red", shape=17,size=2)
+p <- p + scale_colour_manual(values=c("All"="blue","Used"="red"),
+                            name="Stations")
+p <- p + scale_shape_manual(values=c("All"=16,"Used"=17),
+                             name="Stations")
 p <- p + coord_equal()
 p  <- p + xlab("Longitude") + ylab("Latitude") +
   theme(axis.title.x = element_text(face="bold",  size=16),
