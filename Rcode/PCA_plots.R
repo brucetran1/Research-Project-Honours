@@ -69,4 +69,3 @@ ggbiplot(pca, choices = 1:2, #first and second pcs
 ggsave("paper/dryperiodPCAplot.jpg", dpi = 600)
 
 
-
