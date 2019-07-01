@@ -33,10 +33,12 @@ obs_2000 <- obs_2000[c(1:100, 102:103),]
 Creating a new column for Koppengeiger numbers - this was a suggestion from Floris to determine whether there were any links between the results and climate variations around AUstralia. 
 
 ```{r}
-setwd("G:\\University\\Honours\\Data Access\\Modelling\\Results")
+#setwd("G:\\University\\Honours\\Data Access\\Modelling\\Results")
+setwd("C:/Users/rver4657/ownCloud/working/brucetran/Research-Project-Honours")
 
-obs_1990 <- read.csv("obs.summary_1990.csv", header = TRUE)
-obs_2000 <- read.csv("obs.summary_2000.csv", header = TRUE)
+
+obs_1990 <- read.csv("data/obs.summary2_1990.csv", header = TRUE)
+obs_2000 <- read.csv("data/obs.summary2_2000.csv", header = TRUE)
 
 ##PCA of observed
 obs1_1990 <- obs_1990[,c(10:11,17:22)]
@@ -72,10 +74,44 @@ autoplot(obs1_1990pc, data = obs_1990, colour = "KGext",
          loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5)
 autoplot(obs1_2000pc, data = obs_2000, colour = "KGext",
          loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5)
+# added output to tiff (WV)
+tiff()
 autoplot(obs1_1990pc, data = obs_1990, colour = "Type", 
          loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5)
 autoplot(obs1_2000pc, data = obs_2000, colour = "Type",
          loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5)
+
+tiff("paper/PCA_rivertype_wet.tif", width=480, height=480,
+     compression = "lzw")
+autoplot(obs1_1990pc, data = obs_1990, colour = "Type", size= 3, 
+         loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5) +
+  theme_bw() + # removing gray background
+  theme(panel.grid = element_blank()) + # removing background checkmarks
+  theme(axis.text=element_text(size = rel(1.5)),
+        axis.title=element_text(size=rel(2), face = "bold"),
+        plot.title = element_text(size = rel(2), face = "bold"),
+        legend.text = element_text(size=rel(1.2), face="bold"),
+        legend.title = element_text(size=rel(1.2), face="bold")) + 
+  ggtitle("a) Wet Period") #+
+#  scale_color_manual(values = c(#FFFF00", "#66CC00", "#FF6633",
+#                                "#3333CC")) # colouring the groups, html colour codes
+
+dev.off()
+tiff("paper/PCA_rivertype_dry.tif", width=480, height=480,
+     compression = "lzw")
+autoplot(obs1_2000pc, data = obs_2000, colour = "Type", size=3,
+         loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5) + guides(show=FALSE) +
+  theme_bw() + # removing gray background
+  theme(panel.grid = element_blank()) + # removing background checkmarks
+  theme(axis.text=element_text(size = rel(1.5)),
+        axis.title=element_text(size=rel(2), face = "bold"),
+        plot.title = element_text(size = rel(2), face = "bold")) + 
+  ggtitle("b) Dry Period") #+
+#  scale_color_manual(values = c(#FFFF00", "#66CC00", "#FF6633",
+#                                "#3333CC")) # colouring the groups, html colour codes
+ 
+dev.off()
+
 ```
 
 Autoplot function from ggfortify was used to produce the graphs I wanted. 
